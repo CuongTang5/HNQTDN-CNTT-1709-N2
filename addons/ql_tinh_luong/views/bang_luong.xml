@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+
+    <record id="view_bang_luong_form" model="ir.ui.view">
+        <field name="name">bang_luong_form</field>
+        <field name="model">bang_luong</field>
+        <field name="arch" type="xml">
+            <form string="Bảng Lương">
+                <header>
+                    <button name="action_xac_nhan" string="Xác Nhận" type="object" class="btn-primary"
+                            attrs="{'invisible': [('trang_thai', '!=', 'nhap')]}"/>
+                    <button name="action_da_tra" string="Đã Trả Lương" type="object" class="btn-success"
+                            attrs="{'invisible': [('trang_thai', '!=', 'xac_nhan')]}"/>
+                    <button name="action_nhan_vien_xac_nhan" string="✍ NV Xác Nhận Nhận Lương" type="object"
+                            class="btn-warning"
+                            attrs="{'invisible': [('trang_thai', '!=', 'da_tra')]}"/>
+                    <button name="action_in_phieu_luong" string="🖨 In Phiếu Lương" type="object"
+                            attrs="{'invisible': [('trang_thai', '=', 'nhap')]}"/>
+                    <button name="action_ve_nhap" string="Về Nháp" type="object"
+                            attrs="{'invisible': [('trang_thai', 'in', ['nhap','da_tra','nhan_vien_xac_nhan'])]}"/>
+                    <field name="trang_thai" widget="statusbar"
+                           statusbar_visible="nhap,xac_nhan,da_tra,nhan_vien_xac_nhan"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-success" role="alert"
+                         attrs="{'invisible': [('da_ky_xac_nhan', '=', False)]}">
+                        <i class="fa fa-check-circle"/>
+                        Nhân viên đã xác nhận nhận lương lúc
+                        <field name="ngay_ky_xac_nhan" readonly="1" nolabel="1"/>.
+                    </div>
+
+                    <div class="oe_title"><h1><field name="display_name" readonly="1"/></h1></div>
+
+                    <group>
+                        <group string="Nhân Viên &amp; Kỳ Lương">
+                            <field name="nhan_vien_id" attrs="{'readonly': [('trang_thai', '!=', 'nhap')]}"/>
+                            <field name="thang" attrs="{'readonly': [('trang_thai', '!=', 'nhap')]}"/>
+                            <field name="nam" attrs="{'readonly': [('trang_thai', '!=', 'nhap')]}"/>
+                            <field name="ngay_tra_luong" readonly="1"/>
+                        </group>
+                        <group string="Hợp Đồng">
+                            <field name="hop_dong_id" readonly="1"/>
+                            <field name="luong_co_ban" readonly="1"
+                                   style="font-weight:bold;color:#007bff;"/>
+                            <field name="so_ngay_cong_chuan" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Tóm tắt lương nổi bật -->
+                    <div class="o_hr_payslip_resume" style="background:#f8f9fa;border-radius:8px;padding:16px;margin-bottom:16px;">
+                        <div class="row text-center">
+                            <div class="col-3">
+                                <div style="font-size:12px;color:#6c757d;">Ngày Công</div>
+                                <div style="font-size:22px;font-weight:bold;color:#007bff;">
+                                    <field name="tong_ngay_tinh_luong" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div style="font-size:12px;color:#6c757d;">Lương Gross</div>
+                                <div style="font-size:22px;font-weight:bold;color:#fd7e14;">
+                                    <field name="luong_gross" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div style="font-size:12px;color:#6c757d;">Khấu Trừ BH</div>
+                                <div style="font-size:22px;font-weight:bold;color:#dc3545;">
+                                    <field name="bao_hiem_nhan_vien" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div style="font-size:12px;color:#6c757d;">Thực Lãnh</div>
+                                <div style="font-size:22px;font-weight:bold;color:#28a745;">
+                                    <field name="luong_thuc_lanh" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <notebook>
+                        <page string="Chấm Công &amp; OT" name="cham_cong">
+                            <group>
+                                <group string="Ngày Công">
+                                    <field name="tong_ngay_cong" readonly="1"/>
+                                    <field name="ngay_nghi_phep_co_luong" readonly="1"/>
+                                    <field name="tong_ngay_tinh_luong" readonly="1"
+                                           style="font-weight:bold;"/>
+                                    <field name="luong_theo_cong" readonly="1"/>
+                                </group>
+                                <group string="Tăng Ca (OT)">
+                                    <field name="tong_gio_ot_thuong" readonly="1"/>
+                                    <field name="tong_gio_ot_cuoi_tuan" readonly="1"/>
+                                    <field name="tong_gio_ot_le" readonly="1"/>
+                                    <field name="luong_ot" readonly="1"
+                                           style="font-weight:bold;color:#fd7e14;"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Thưởng / Phạt &amp; Phụ Cấp" name="thuong_phat">
+                            <group>
+                                <group string="Cộng Thêm">
+                                    <field name="tong_thuong" readonly="1"
+                                           style="color:#28a745;font-weight:bold;"/>
+                                    <field name="phu_cap" attrs="{'readonly': [('trang_thai', '!=', 'nhap')]}"/>
+                                </group>
+                                <group string="Khấu Trừ">
+                                    <field name="tong_phat" readonly="1"
+                                           style="color:#dc3545;font-weight:bold;"/>
+                                    <field name="bao_hiem_nhan_vien" readonly="1"/>
+                                    <field name="bao_hiem_doanh_nghiep" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Kết Quả" name="ket_qua">
+                            <group>
+                                <group>
+                                    <field name="luong_gross" readonly="1"/>
+                                    <field name="bao_hiem_nhan_vien" readonly="1"/>
+                                    <field name="luong_thuc_lanh" readonly="1"
+                                           style="font-size:22px;font-weight:bold;color:#28a745;"/>
+                                </group>
+                                <group>
+                                    <field name="da_ky_xac_nhan" readonly="1"/>
+                                    <field name="ngay_ky_xac_nhan" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Ghi Chú">
+                                <field name="ghi_chu" nolabel="1"
+                                       attrs="{'readonly': [('trang_thai', 'in', ['da_tra','nhan_vien_xac_nhan'])]}"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bang_luong_tree" model="ir.ui.view">
+        <field name="name">bang_luong_tree</field>
+        <field name="model">bang_luong</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="trang_thai == 'nhan_vien_xac_nhan'"
+                  decoration-info="trang_thai == 'da_tra'"
+                  decoration-warning="trang_thai == 'xac_nhan'"
+                  decoration-muted="trang_thai == 'nhap'">
+                <field name="nhan_vien_id"/>
+                <field name="phong_ban_id"/>
+                <field name="chuc_vu_id"/>
+                <field name="thang"/>
+                <field name="nam"/>
+                <field name="luong_co_ban"/>
+                <field name="tong_ngay_cong"/>
+                <field name="tong_ngay_tinh_luong"/>
+                <field name="luong_ot"/>
+                <field name="tong_thuong"/>
+                <field name="tong_phat"/>
+                <field name="bao_hiem_nhan_vien"/>
+                <field name="luong_thuc_lanh"/>
+                <field name="trang_thai" widget="badge"
+                       decoration-success="trang_thai == 'nhan_vien_xac_nhan'"
+                       decoration-info="trang_thai == 'da_tra'"
+                       decoration-warning="trang_thai == 'xac_nhan'"
+                       decoration-muted="trang_thai == 'nhap'"/>
+                <field name="da_ky_xac_nhan"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bang_luong_search" model="ir.ui.view">
+        <field name="name">bang_luong_search</field>
+        <field name="model">bang_luong</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="nhan_vien_id"/>
+                <field name="phong_ban_id"/>
+                <field name="chuc_vu_id"/>
+                <field name="thang"/>
+                <field name="nam"/>
+                <separator/>
+                <filter string="Nháp" name="nhap" domain="[('trang_thai','=','nhap')]"/>
+                <filter string="Đã Xác Nhận" name="xac_nhan" domain="[('trang_thai','=','xac_nhan')]"/>
+                <filter string="Đã Trả Lương" name="da_tra" domain="[('trang_thai','=','da_tra')]"/>
+                <filter string="NV Đã Xác Nhận" name="nv_xn" domain="[('trang_thai','=','nhan_vien_xac_nhan')]"/>
+                <filter string="Chưa Ký Xác Nhận" name="chua_ky" domain="[('da_ky_xac_nhan','=',False),('trang_thai','=','da_tra')]"/>
+                <group expand="0" string="Nhóm Theo">
+                    <filter string="Nhân Viên" name="group_nv" context="{'group_by': 'nhan_vien_id'}"/>
+                    <filter string="Phòng Ban" name="group_pb" context="{'group_by': 'phong_ban_id'}"/>
+                    <filter string="Tháng" name="group_thang" context="{'group_by': 'thang'}"/>
+                    <filter string="Năm" name="group_nam" context="{'group_by': 'nam'}"/>
+                    <filter string="Trạng Thái" name="group_tt" context="{'group_by': 'trang_thai'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_bang_luong_graph" model="ir.ui.view">
+        <field name="name">bang_luong_graph</field>
+        <field name="model">bang_luong</field>
+        <field name="arch" type="xml">
+            <graph string="Thống Kê Lương" type="bar">
+                <field name="nhan_vien_id" type="row"/>
+                <field name="luong_thuc_lanh" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_bang_luong" model="ir.actions.act_window">
+        <field name="name">Bảng Lương</field>
+        <field name="res_model">bang_luong</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="search_view_id" ref="view_bang_luong_search"/>
+    </record>
+
+</data></odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+
+    <record id="view_tao_bang_luong_wizard_form" model="ir.ui.view">
+        <field name="name">tao.bang.luong.wizard.form</field>
+        <field name="model">tao.bang.luong.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Tạo Bảng Lương Hàng Loạt">
+                <group>
+                    <group string="Kỳ Lương">
+                        <field name="thang"/>
+                        <field name="nam"/>
+                    </group>
+                    <group string="Lọc Nhân Viên">
+                        <field name="phong_ban_id"/>
+                        <field name="chi_nhan_vien_dang_lam"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_tao" string="Tạo Bảng Lương" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tao_bang_luong_wizard" model="ir.actions.act_window">
+        <field name="name">Tạo Bảng Lương Hàng Loạt</field>
+        <field name="res_model">tao.bang.luong.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</data></odoo>

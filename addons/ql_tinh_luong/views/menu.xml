@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem
+            id="menu_root_tinh_luong"
+            name="Tính Lương"
+            sequence="10"/>
+        <menuitem
+            id="menu_bang_luong"
+            name="Bảng Lương"
+            parent="menu_root_tinh_luong"
+            sequence="1"
+            action="action_bang_luong"/>
+        <menuitem
+            id="menu_tao_bang_luong_wizard"
+            name="Tạo Bảng Lương Hàng Loạt"
+            parent="menu_root_tinh_luong"
+            sequence="2"
+            action="action_tao_bang_luong_wizard"/>
+    </data>
+</odoo>

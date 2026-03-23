@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+
+    <record id="view_lich_lam_viec_form" model="ir.ui.view">
+        <field name="name">lich_lam_viec.form</field>
+        <field name="model">lich_lam_viec</field>
+        <field name="arch" type="xml">
+            <form string="Lịch Đăng Ký Làm Việc">
+                <header>
+                    <button name="action_duyet" string="Duyệt" type="object" class="btn-primary"
+                            attrs="{'invisible': [('trang_thai', '!=', 'cho_duyet')]}"/>
+                    <button name="action_tu_choi" string="Từ Chối" type="object" class="btn-danger"
+                            attrs="{'invisible': [('trang_thai', 'in', ['tu_choi', 'cho_duyet'])]}"/>
+                    <button name="action_cho_duyet" string="Yêu Cầu Lại" type="object"
+                            attrs="{'invisible': [('trang_thai', '!=', 'tu_choi')]}"/>
+                    <field name="trang_thai" widget="statusbar"
+                           statusbar_visible="cho_duyet,da_duyet,tu_choi"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="nhan_vien_id" readonly="1" placeholder="Nhân viên"/>
+                            <span class="text-muted"> — </span>
+                            <field name="ca_lam_viec" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Thông Tin Đăng Ký">
+                            <field name="nhan_vien_id"/>
+                            <field name="ca_lam_viec"/>
+                            <field name="ngay_lam_viec"/>
+                            <field name="loai_cong_viec"/>
+                            <field name="muc_do_uu_tien" widget="priority"/>
+                        </group>
+                        <group string="Thông Tin Nhân Viên">
+                            <field name="ma_dinh_danh" readonly="1"/>
+                            <field name="so_dien_thoai" readonly="1"/>
+                            <field name="phong_ban_id" readonly="1"/>
+                            <field name="chuc_vu_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Lặp Lại">
+                            <field name="lap_lai"/>
+                            <field name="ngay_ket_thuc_lap_lai"
+                                   attrs="{'invisible': [('lap_lai', '=', 'khong')],
+                                           'required': [('lap_lai', '!=', 'khong')]}"/>
+                        </group>
+                        <group string="Thời Gian">
+                            <field name="gio_bat_dau" widget="float_time"/>
+                            <field name="gio_ket_thuc" widget="float_time"/>
+                            <field name="tong_gio" readonly="1"
+                                   style="font-weight:bold;color:#007bff;"/>
+                        </group>
+                    </group>
+
+                    <group string="Mô Tả">
+                        <field name="mo_ta" nolabel="1" placeholder="Mô tả công việc..."/>
+                    </group>
+
+                    <notebook>
+                        <page string="Tệp Đính Kèm" name="tep">
+                            <field name="luu_file_id">
+                                <tree editable="bottom">
+                                    <field name="luu_file" filename="luu_file_name" widget="binary"/>
+                                    <field name="luu_file_name" readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Lịch Sử Đăng Ký" name="lich_su">
+                            <field name="lich_su_dang_ky_ids">
+                                <tree>
+                                    <field name="ngay_lam_viec"/>
+                                    <field name="ca_lam_viec"/>
+                                    <field name="trang_thai"/>
+                                    <field name="ghi_chu"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_lich_lam_viec_tree" model="ir.ui.view">
+        <field name="name">lich_lam_viec.tree</field>
+        <field name="model">lich_lam_viec</field>
+        <field name="arch" type="xml">
+            <tree string="Lịch Làm Việc"
+                  decoration-success="trang_thai == 'da_duyet'"
+                  decoration-danger="trang_thai == 'tu_choi'"
+                  decoration-warning="trang_thai == 'cho_duyet'">
+                <field name="nhan_vien_id"/>
+                <field name="ca_lam_viec"/>
+                <field name="ngay_lam_viec"/>
+                <field name="phong_ban_id"/>
+                <field name="chuc_vu_id"/>
+                <field name="loai_cong_viec"/>
+                <field name="tong_gio" string="Tổng Giờ" sum="Tổng"/>
+                <field name="muc_do_uu_tien" widget="badge"
+                       decoration-danger="muc_do_uu_tien == 'cao'"
+                       decoration-warning="muc_do_uu_tien == 'trung_binh'"
+                       decoration-success="muc_do_uu_tien == 'thap'"/>
+                <field name="trang_thai" widget="badge"
+                       decoration-success="trang_thai == 'da_duyet'"
+                       decoration-danger="trang_thai == 'tu_choi'"
+                       decoration-warning="trang_thai == 'cho_duyet'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_lich_lam_viec_graph" model="ir.ui.view">
+        <field name="name">lich_lam_viec.graph</field>
+        <field name="model">lich_lam_viec</field>
+        <field name="arch" type="xml">
+            <graph string="Thống Kê Lịch Làm Việc" type="bar">
+                <field name="phong_ban_id" type="row"/>
+                <field name="tong_gio" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_lich_lam_viec_search" model="ir.ui.view">
+        <field name="name">lich_lam_viec.search</field>
+        <field name="model">lich_lam_viec</field>
+        <field name="arch" type="xml">
+            <search string="Tìm Lịch Làm Việc">
+                <field name="nhan_vien_id"/>
+                <field name="ca_lam_viec"/>
+                <field name="ngay_lam_viec"/>
+                <separator/>
+                <filter string="Chờ Duyệt" name="cho_duyet" domain="[('trang_thai','=','cho_duyet')]"/>
+                <filter string="Đã Duyệt" name="da_duyet" domain="[('trang_thai','=','da_duyet')]"/>
+                <filter string="Từ Chối" name="tu_choi" domain="[('trang_thai','=','tu_choi')]"/>
+                <separator/>
+                <filter string="Hôm Nay" name="hom_nay"
+                        domain="[('ngay_lam_viec','=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="1" string="Nhóm Theo">
+                    <filter string="Nhân Viên" name="group_nv" context="{'group_by': 'nhan_vien_id'}"/>
+                    <filter string="Phòng Ban" name="group_pb" context="{'group_by': 'phong_ban_id'}"/>
+                    <filter string="Ngày" name="group_ngay" context="{'group_by': 'ngay_lam_viec:day'}"/>
+                    <filter string="Trạng Thái" name="group_tt" context="{'group_by': 'trang_thai'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_lich_lam_viec" model="ir.actions.act_window">
+        <field name="name">Lịch Đăng Ký Làm Việc</field>
+        <field name="res_model">lich_lam_viec</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="search_view_id" ref="view_lich_lam_viec_search"/>
+    </record>
+
+</data></odoo>

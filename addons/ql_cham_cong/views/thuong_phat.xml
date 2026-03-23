@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+
+    <record id="view_thuong_phat_form" model="ir.ui.view">
+        <field name="name">thuong_phat_form</field>
+        <field name="model">thuong_phat</field>
+        <field name="arch" type="xml">
+            <form string="Thưởng / Phạt">
+                <header>
+                    <button name="action_duyet" string="Duyệt" type="object" class="btn-primary"
+                            attrs="{'invisible': [('trang_thai', '!=', 'cho_duyet')]}"/>
+                    <button name="action_tu_choi" string="Từ Chối" type="object" class="btn-danger"
+                            attrs="{'invisible': [('trang_thai', '!=', 'cho_duyet')]}"/>
+                    <field name="trang_thai" widget="statusbar"
+                           statusbar_visible="cho_duyet,da_duyet,tu_choi"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+
+                    <!-- Badge loại thưởng/phạt nổi bật -->
+                    <div class="text-center mb-3">
+                        <span attrs="{'invisible': [('loai', '!=', 'thuong')]}"
+                              style="background:#28a745;color:#fff;padding:6px 20px;border-radius:20px;font-size:15px;font-weight:bold;">
+                            THƯỞNG
+                        </span>
+                        <span attrs="{'invisible': [('loai', '!=', 'phat')]}"
+                              style="background:#dc3545;color:#fff;padding:6px 20px;border-radius:20px;font-size:15px;font-weight:bold;">
+                            PHẠT
+                        </span>
+                    </div>
+
+                    <group>
+                        <group string="Thông Tin">
+                            <field name="nhan_vien_id"/>
+                            <field name="phong_ban_id" readonly="1"/>
+                            <field name="loai"/>
+                            <field name="ly_do"/>
+                        </group>
+                        <group string="Giá Trị &amp; Thời Gian">
+                            <field name="so_tien"
+                                   style="font-size:18px;font-weight:bold;color:#007bff;"/>
+                            <field name="ngay_ap_dung"/>
+                            <field name="thang"/>
+                            <field name="nam"/>
+                        </group>
+                    </group>
+
+                    <group string="Ghi Chú">
+                        <field name="ghi_chu" nolabel="1" placeholder="Ghi chú thêm..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_thuong_phat_tree" model="ir.ui.view">
+        <field name="name">thuong_phat_tree</field>
+        <field name="model">thuong_phat</field>
+        <field name="arch" type="xml">
+            <tree string="Thưởng / Phạt"
+                  decoration-success="loai == 'thuong' and trang_thai == 'da_duyet'"
+                  decoration-danger="loai == 'phat' and trang_thai == 'da_duyet'"
+                  decoration-warning="trang_thai == 'cho_duyet'"
+                  decoration-muted="trang_thai == 'tu_choi'">
+                <field name="nhan_vien_id"/>
+                <field name="phong_ban_id"/>
+                <field name="loai" widget="badge"
+                       decoration-success="loai == 'thuong'"
+                       decoration-danger="loai == 'phat'"/>
+                <field name="ly_do"/>
+                <field name="so_tien" sum="Tổng"/>
+                <field name="thang"/>
+                <field name="nam"/>
+                <field name="trang_thai" widget="badge"
+                       decoration-success="trang_thai == 'da_duyet'"
+                       decoration-danger="trang_thai == 'tu_choi'"
+                       decoration-warning="trang_thai == 'cho_duyet'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_thuong_phat_graph" model="ir.ui.view">
+        <field name="name">thuong_phat_graph</field>
+        <field name="model">thuong_phat</field>
+        <field name="arch" type="xml">
+            <graph string="Thống Kê Thưởng/Phạt" type="bar">
+                <field name="nhan_vien_id" type="row"/>
+                <field name="so_tien" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_thuong_phat_search" model="ir.ui.view">
+        <field name="name">thuong_phat_search</field>
+        <field name="model">thuong_phat</field>
+        <field name="arch" type="xml">
+            <search string="Tìm Thưởng/Phạt">
+                <field name="nhan_vien_id"/>
+                <field name="thang"/>
+                <field name="nam"/>
+                <separator/>
+                <filter string="Thưởng" name="thuong" domain="[('loai','=','thuong')]"/>
+                <filter string="Phạt" name="phat" domain="[('loai','=','phat')]"/>
+                <separator/>
+                <filter string="Chờ Duyệt" name="cho_duyet" domain="[('trang_thai','=','cho_duyet')]"/>
+                <filter string="Đã Duyệt" name="da_duyet" domain="[('trang_thai','=','da_duyet')]"/>
+                <group expand="1" string="Nhóm Theo">
+                    <filter string="Nhân Viên" name="group_nv" context="{'group_by': 'nhan_vien_id'}"/>
+                    <filter string="Loại" name="group_loai" context="{'group_by': 'loai'}"/>
+                    <filter string="Tháng" name="group_thang" context="{'group_by': 'thang'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_thuong_phat" model="ir.actions.act_window">
+        <field name="name">Thưởng / Phạt</field>
+        <field name="res_model">thuong_phat</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="search_view_id" ref="view_thuong_phat_search"/>
+    </record>
+
+</data></odoo>

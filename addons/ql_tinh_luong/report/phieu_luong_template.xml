@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <template id="report_phieu_luong_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 style="text-align:center;">PHIẾU LƯƠNG</h2>
+                        <h4 style="text-align:center;">
+                            Tháng <t t-esc="o.thang"/> / <t t-esc="o.nam"/>
+                        </h4>
+                        <hr/>
+                        <table class="table table-sm" style="width:100%;">
+                            <tr>
+                                <td><b>Nhân Viên:</b></td>
+                                <td><t t-esc="o.nhan_vien_id.ho_va_ten"/></td>
+                                <td><b>Phòng Ban:</b></td>
+                                <td><t t-esc="o.nhan_vien_id.phong_ban_id.ten_phong_ban"/></td>
+                            </tr>
+                            <tr>
+                                <td><b>Chức Vụ:</b></td>
+                                <td><t t-esc="o.nhan_vien_id.chuc_vu_id.ten_chuc_vu"/></td>
+                                <td><b>Hợp Đồng:</b></td>
+                                <td><t t-esc="o.hop_dong_id.name"/></td>
+                            </tr>
+                        </table>
+                        <hr/>
+                        <table class="table table-bordered" style="width:100%;">
+                            <thead>
+                                <tr style="background:#f0f0f0;">
+                                    <th>Khoản Mục</th>
+                                    <th style="text-align:right;">Số Tiền (VNĐ)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Lương Cơ Bản</td>
+                                    <td style="text-align:right;"><t t-esc="'{:,.0f}'.format(o.luong_co_ban)"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Ngày Công Thực Tế (<t t-esc="o.tong_ngay_cong"/> ngày)</td>
+                                    <td style="text-align:right;"><t t-esc="'{:,.0f}'.format(o.luong_theo_cong)"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Lương Tăng Ca (OT)</td>
+                                    <td style="text-align:right;"><t t-esc="'{:,.0f}'.format(o.luong_ot)"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Thưởng</td>
+                                    <td style="text-align:right;"><t t-esc="'{:,.0f}'.format(o.tong_thuong)"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Phụ Cấp</td>
+                                    <td style="text-align:right;"><t t-esc="'{:,.0f}'.format(o.phu_cap)"/></td>
+                                </tr>
+                                <tr style="color:red;">
+                                    <td>Phạt</td>
+                                    <td style="text-align:right;">- <t t-esc="'{:,.0f}'.format(o.tong_phat)"/></td>
+                                </tr>
+                                <tr style="color:red;">
+                                    <td>BHXH/BHYT/BHTN NV (10.5%)</td>
+                                    <td style="text-align:right;">- <t t-esc="'{:,.0f}'.format(o.bao_hiem_nhan_vien)"/></td>
+                                </tr>
+                                <tr style="background:#e8f5e9;font-weight:bold;">
+                                    <td>LƯƠNG THỰC LÃNH</td>
+                                    <td style="text-align:right;font-size:16px;color:green;">
+                                        <t t-esc="'{:,.0f}'.format(o.luong_thuc_lanh)"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="text-align:center;width:50%;">
+                                    <b>Người Lập Bảng Lương</b><br/><br/><br/>
+                                    <i>(Ký, ghi rõ họ tên)</i>
+                                </td>
+                                <td style="text-align:center;width:50%;">
+                                    <b>Nhân Viên Xác Nhận</b><br/>
+                                    <t t-if="o.da_ky_xac_nhan">
+                                        <span style="color:green;">Da xac nhan luc <t t-esc="o.ngay_ky_xac_nhan"/></span>
+                                    </t>
+                                    <t t-else="">
+                                        <br/><br/><i>(Ký, ghi rõ họ tên)</i>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_phieu_luong" model="ir.actions.report">
+        <field name="name">Phieu Luong</field>
+        <field name="model">bang_luong</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ql_tinh_luong.report_phieu_luong_template</field>
+        <field name="report_file">ql_tinh_luong.report_phieu_luong_template</field>
+        <field name="binding_model_id" ref="model_bang_luong"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</data>
+</odoo>

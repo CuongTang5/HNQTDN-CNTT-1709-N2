@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+
+    <record id="view_tang_ca_form" model="ir.ui.view">
+        <field name="name">tang_ca_form</field>
+        <field name="model">tang_ca</field>
+        <field name="arch" type="xml">
+            <form string="Đăng Ký Tăng Ca (OT)">
+                <header>
+                    <button name="action_duyet" string="Duyệt" type="object" class="btn-primary"
+                            attrs="{'invisible': [('trang_thai', '!=', 'cho_duyet')]}"/>
+                    <button name="action_tu_choi" string="Từ Chối" type="object" class="btn-danger"
+                            attrs="{'invisible': [('trang_thai', '!=', 'cho_duyet')]}"/>
+                    <field name="trang_thai" widget="statusbar"
+                           statusbar_visible="cho_duyet,da_duyet,tu_choi"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Thông Tin Tăng Ca">
+                            <field name="nhan_vien_id"/>
+                            <field name="phong_ban_id" readonly="1"/>
+                            <field name="ngay_tang_ca"/>
+                            <field name="loai_ngay"/>
+                        </group>
+                        <group string="Thời Gian &amp; Hệ Số">
+                            <field name="gio_bat_dau" widget="float_time"/>
+                            <field name="gio_ket_thuc" widget="float_time"/>
+                            <field name="so_gio_ot" readonly="1"
+                                   style="font-weight:bold;color:#007bff;"/>
+                            <field name="he_so_ot" readonly="1"
+                                   style="font-weight:bold;color:#fd7e14;"/>
+                        </group>
+                    </group>
+
+                    <group string="Ghi Chú">
+                        <field name="ghi_chu" nolabel="1" placeholder="Lý do tăng ca..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tang_ca_tree" model="ir.ui.view">
+        <field name="name">tang_ca_tree</field>
+        <field name="model">tang_ca</field>
+        <field name="arch" type="xml">
+            <tree string="Tăng Ca (OT)"
+                  decoration-success="trang_thai == 'da_duyet'"
+                  decoration-danger="trang_thai == 'tu_choi'"
+                  decoration-warning="trang_thai == 'cho_duyet'">
+                <field name="nhan_vien_id"/>
+                <field name="phong_ban_id"/>
+                <field name="ngay_tang_ca"/>
+                <field name="loai_ngay"/>
+                <field name="gio_bat_dau" widget="float_time"/>
+                <field name="gio_ket_thuc" widget="float_time"/>
+                <field name="so_gio_ot" sum="Tổng Giờ OT"/>
+                <field name="he_so_ot"/>
+                <field name="trang_thai" widget="badge"
+                       decoration-success="trang_thai == 'da_duyet'"
+                       decoration-danger="trang_thai == 'tu_choi'"
+                       decoration-warning="trang_thai == 'cho_duyet'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tang_ca_graph" model="ir.ui.view">
+        <field name="name">tang_ca_graph</field>
+        <field name="model">tang_ca</field>
+        <field name="arch" type="xml">
+            <graph string="Thống Kê Tăng Ca" type="bar">
+                <field name="nhan_vien_id" type="row"/>
+                <field name="so_gio_ot" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_tang_ca_search" model="ir.ui.view">
+        <field name="name">tang_ca_search</field>
+        <field name="model">tang_ca</field>
+        <field name="arch" type="xml">
+            <search string="Tìm Tăng Ca">
+                <field name="nhan_vien_id"/>
+                <field name="ngay_tang_ca"/>
+                <separator/>
+                <filter string="Chờ Duyệt" name="cho_duyet" domain="[('trang_thai','=','cho_duyet')]"/>
+                <filter string="Đã Duyệt" name="da_duyet" domain="[('trang_thai','=','da_duyet')]"/>
+                <filter string="Từ Chối" name="tu_choi" domain="[('trang_thai','=','tu_choi')]"/>
+                <group expand="1" string="Nhóm Theo">
+                    <filter string="Nhân Viên" name="group_nv" context="{'group_by': 'nhan_vien_id'}"/>
+                    <filter string="Loại Ngày" name="group_loai" context="{'group_by': 'loai_ngay'}"/>
+                    <filter string="Tháng" name="group_thang" context="{'group_by': 'ngay_tang_ca:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tang_ca" model="ir.actions.act_window">
+        <field name="name">Tăng Ca (OT)</field>
+        <field name="res_model">tang_ca</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="search_view_id" ref="view_tang_ca_search"/>
+    </record>
+
+</data></odoo>
