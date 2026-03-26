@@ -4,3 +4,4 @@ access_chuc_vu,chuc_vu.chuc_vu,model_chuc_vu,base.group_user,1,1,1,1
 access_phong_ban,phong_ban.phong_ban,model_phong_ban,base.group_user,1,1,1,1
 access_hop_dong,hop_dong.hop_dong,model_hop_dong,base.group_user,1,1,1,1
 access_hr_family,hr.family,model_hr_family,base.group_user,1,1,1,1
+access_hr_work_history,hr.work.history,model_hr_work_history,base.group_user,1,1,1,1

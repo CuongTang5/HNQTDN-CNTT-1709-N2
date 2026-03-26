@@ -29,5 +29,11 @@
             sequence="4"
             action="action_hop_dong"
         />
+        <menuitem name="AI Tro Ly HR"
+            id="menu_ai_chatbox"
+            parent="menu_root"
+            sequence="10"
+            action="action_ai_chatbox"
+        />
     </data>
 </odoo>

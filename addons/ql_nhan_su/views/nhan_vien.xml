@@ -93,6 +93,18 @@
                                 </group>
                             </group>
                         </page>
+
+                        <page string="Quá Trình Công Tác" name="qua_trinh_cong_tac">
+                            <field name="work_history_ids">
+                                <tree editable="bottom" decoration-info="not date_end">
+                                    <field name="company_name"/>
+                                    <field name="position"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="mo_ta"/>
+                                </tree>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
@@ -193,7 +205,7 @@
         <field name="res_model">nhan_vien</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="search_view_id" ref="nhan_vien_search"/>
-        <field name="context">{'search_default_dang_lam': 1}</field>
+        <field name="context">{'search_default_dang_lam': 1, 'search_default_thu_viec': 1}</field>
     </record>
 
 </data></odoo>

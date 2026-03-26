@@ -37,7 +37,7 @@ class DiemDanh(models.Model):
 
     # ─── Trạng thái ─────────────────────────────────────────────────────────
     trang_thai_diem_danh = fields.Selection([
-        ('chua_diem_danh', 'Chưa Điểm Danh'),
+        ('chua_diem_danh', 'Chưa Hoàn Thành'),
         ('dang_lam', 'Đang Làm Việc'),
         ('som', 'Đến Sớm'),
         ('dung_gio', 'Đúng Giờ'),
@@ -45,11 +45,35 @@ class DiemDanh(models.Model):
         ('hoan_thanh', 'Hoàn Thành'),
     ], string="Trạng Thái", default='chua_diem_danh', readonly=True)
 
+    # Field tính toán để hiển thị màu
+    co_dung_gio = fields.Boolean(
+        string="Check-in Đúng Giờ", compute='_compute_co_dung_gio', store=True
+    )
+
     ghi_chu = fields.Text(string="Ghi Chú")
 
     # ════════════════════════════════════════════════════════════════════════
     # COMPUTE
     # ════════════════════════════════════════════════════════════════════════
+
+    @api.depends('gio_check_in', 'ca_lam_viec', 'ngay_lam_viec')
+    def _compute_co_dung_gio(self):
+        from datetime import datetime
+        ca_map = {'sang': (8, 12), 'chieu': (13, 17), 'toi': (18, 22)}
+        for r in self:
+            if not r.gio_check_in or not r.ca_lam_viec or not r.ngay_lam_viec:
+                r.co_dung_gio = True
+                continue
+            ca = ca_map.get(r.ca_lam_viec)
+            if not ca:
+                r.co_dung_gio = True
+                continue
+            ngay = r.ngay_lam_viec
+            gio_bat_dau = datetime(ngay.year, ngay.month, ngay.day, ca[0], 0, 0)
+            gio_ket_thuc = datetime(ngay.year, ngay.month, ngay.day, ca[1], 0, 0)
+            # check-in trong phạm vi ca (cho phép trễ 15 phút)
+            check_in_local = r.gio_check_in
+            r.co_dung_gio = (gio_bat_dau <= check_in_local <= gio_ket_thuc)
 
     @api.depends('nhan_vien_id', 'ngay_lam_viec')
     def _compute_display_name(self):
@@ -162,12 +186,10 @@ class DiemDanh(models.Model):
                 # Xác định trạng thái check-in
                 start = rec._get_ca_start_time()
                 if start:
-                    # So sánh giờ local (UTC+7 offset ~25200s)
-                    now_local = now
                     diff_minutes = (now_local - start).total_seconds() / 60
                     if diff_minutes < -5:
                         trang_thai = 'som'
-                    elif diff_minutes <= 5:
+                    elif diff_minutes <= 15:
                         trang_thai = 'dung_gio'
                     else:
                         trang_thai = 'muon'

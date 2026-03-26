@@ -112,6 +112,23 @@
                             </group>
                         </page>
 
+                        <page string="Chi Tiết Lương" name="chi_tiet">
+                            <field name="line_ids"
+                                   attrs="{'readonly': [('trang_thai', 'in', ['da_tra','nhan_vien_xac_nhan'])]}">
+                                <tree editable="bottom"
+                                      decoration-success="type == 'cong'"
+                                      decoration-danger="type == 'tru'">
+                                    <field name="name"/>
+                                    <field name="type"/>
+                                    <field name="amount" sum="Tổng"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="thuc_lanh_tu_lines" readonly="1"
+                                       style="font-size:18px;font-weight:bold;color:#28a745;"/>
+                            </group>
+                        </page>
+
                         <page string="Kết Quả" name="ket_qua">
                             <group>
                                 <group>

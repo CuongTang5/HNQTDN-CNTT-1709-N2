@@ -46,6 +46,12 @@ class BangLuong(models.Model):
     # ─── Phụ cấp nhập tay ───────────────────────────────────────────────────
     phu_cap = fields.Float(string='Phụ Cấp Khác (VNĐ)', default=0.0)
 
+    # ─── Chi tiết phiếu lương ───────────────────────────────────────────────
+    line_ids = fields.One2many('bang_luong.line', 'bang_luong_id', string='Chi Tiết Lương')
+    thuc_lanh_tu_lines = fields.Float(
+        string='Thực Lãnh (Từ Chi Tiết)', compute='_compute_thuc_lanh_tu_lines', store=True
+    )
+
     # ─── Tính lương ─────────────────────────────────────────────────────────
     luong_theo_cong = fields.Float(string='Lương Theo Công', compute='_compute_luong', store=True)
     bao_hiem_nhan_vien = fields.Float(string='BHXH/BHYT/BHTN NV (10.5%)', compute='_compute_luong', store=True)
@@ -198,6 +204,13 @@ class BangLuong(models.Model):
             rec.luong_gross = round(max(0.0, luong_gross), 2)
             rec.thue_tncn = 0.0
             rec.luong_thuc_lanh = round(max(0.0, luong_thuc_lanh), 2)
+
+    @api.depends('line_ids', 'line_ids.amount', 'line_ids.type')
+    def _compute_thuc_lanh_tu_lines(self):
+        for rec in self:
+            tong_cong = sum(l.amount for l in rec.line_ids if l.type == 'cong')
+            tong_tru = sum(l.amount for l in rec.line_ids if l.type == 'tru')
+            rec.thuc_lanh_tu_lines = round(tong_cong - tong_tru, 2)
 
     @api.model
     def _tinh_thue_luy_tien(self, tntt):

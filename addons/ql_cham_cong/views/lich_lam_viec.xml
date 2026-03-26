@@ -17,6 +17,13 @@
                            statusbar_visible="cho_duyet,da_duyet,tu_choi"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                                name="action_xem_diem_danh" icon="fa-calendar-check-o"
+                                attrs="{'invisible': [('trang_thai', '!=', 'da_duyet')]}">
+                            <span class="o_stat_text">Điểm Danh</span>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1>
                             <field name="nhan_vien_id" readonly="1" placeholder="Nhân viên"/>
@@ -128,7 +135,7 @@
         <field name="model">lich_lam_viec</field>
         <field name="arch" type="xml">
             <search string="Tìm Lịch Làm Việc">
-                <field name="nhan_vien_id"/>
+                <field name="nhan_vien_id" string="Nhân Viên" filter_domain="[('nhan_vien_id.ho_va_ten','ilike',self)]"/>
                 <field name="ca_lam_viec"/>
                 <field name="ngay_lam_viec"/>
                 <separator/>
@@ -138,10 +145,13 @@
                 <separator/>
                 <filter string="Hôm Nay" name="hom_nay"
                         domain="[('ngay_lam_viec','=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Tháng Này" name="thang_nay"
+                        domain="[('ngay_lam_viec','&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d')),('ngay_lam_viec','&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
                 <group expand="1" string="Nhóm Theo">
                     <filter string="Nhân Viên" name="group_nv" context="{'group_by': 'nhan_vien_id'}"/>
                     <filter string="Phòng Ban" name="group_pb" context="{'group_by': 'phong_ban_id'}"/>
-                    <filter string="Ngày" name="group_ngay" context="{'group_by': 'ngay_lam_viec:day'}"/>
+                    <filter string="Tháng" name="group_thang" context="{'group_by': 'ngay_lam_viec:month'}"/>
+                    <filter string="Năm" name="group_nam" context="{'group_by': 'ngay_lam_viec:year'}"/>
                     <filter string="Trạng Thái" name="group_tt" context="{'group_by': 'trang_thai'}"/>
                 </group>
             </search>
@@ -153,6 +163,7 @@
         <field name="res_model">lich_lam_viec</field>
         <field name="view_mode">tree,form,graph</field>
         <field name="search_view_id" ref="view_lich_lam_viec_search"/>
+        <field name="context">{}</field>
     </record>
 
 </data></odoo>

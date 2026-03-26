@@ -48,6 +48,10 @@ class NhanVien(models.Model):
         compute="_compute_hop_dong", store=False
     )
 
+    # ─── Quá trình công tác ─────────────────────────────────────────────────
+    work_history_ids = fields.One2many('hr.work.history', 'nhan_vien_id',
+                                       string="Quá Trình Công Tác")
+
     # ─── Smart button counts ─────────────────────────────────────────────────
     so_hop_dong = fields.Integer(string="Số Hợp Đồng", compute="_compute_counts")
     so_diem_danh = fields.Integer(string="Số Ngày Công", compute="_compute_counts")

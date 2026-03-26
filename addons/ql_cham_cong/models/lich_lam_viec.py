@@ -108,8 +108,8 @@ class LichLamViec(models.Model):
         return record
 
     def action_duyet(self):
-        self.trang_thai = 'da_duyet'
         for rec in self:
+            rec.trang_thai = 'da_duyet'
             if not rec.nhan_vien_id or not rec.ngay_lam_viec:
                 continue
             # Kiểm tra đã có bản ghi điểm danh chưa
@@ -124,6 +124,28 @@ class LichLamViec(models.Model):
                     'lich_lam_viec_id': rec.id,
                     'trang_thai_diem_danh': 'chua_diem_danh',
                 })
+
+    def action_xem_diem_danh(self):
+        self.ensure_one()
+        dd = self.env['diem_danh'].search([
+            ('lich_lam_viec_id', '=', self.id),
+        ], limit=1)
+        if dd:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Điểm Danh',
+                'res_model': 'diem_danh',
+                'view_mode': 'form',
+                'res_id': dd.id,
+            }
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Điểm Danh',
+            'res_model': 'diem_danh',
+            'view_mode': 'tree,form',
+            'domain': [('nhan_vien_id', '=', self.nhan_vien_id.id),
+                       ('ngay_lam_viec', '=', self.ngay_lam_viec)],
+        }
 
     def action_tu_choi(self):
         self.trang_thai = 'tu_choi'

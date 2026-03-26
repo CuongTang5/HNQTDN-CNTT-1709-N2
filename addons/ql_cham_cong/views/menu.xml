@@ -12,11 +12,22 @@
             sequence="1"
             action="action_lich_lam_viec"
         />
-        <menuitem name="Điểm Danh" 
-            id="menu_diem_danh" 
-            parent="menu_root" 
+        <menuitem name="Điểm Danh"
+            id="menu_diem_danh_root"
+            parent="menu_root"
             sequence="2"
-            action="action_diem_danh"
+        />
+        <menuitem name="Điểm Danh Hôm Nay"
+            id="menu_diem_danh_hom_nay"
+            parent="menu_diem_danh_root"
+            sequence="1"
+            action="action_diem_danh_hom_nay"
+        />
+        <menuitem name="Tổng Hợp Tháng"
+            id="menu_diem_danh_thang"
+            parent="menu_diem_danh_root"
+            sequence="2"
+            action="action_diem_danh_thang"
         />
         <menuitem name="Yêu Cầu Nghỉ Phép" 
             id="menu_yeu_cau_nghi_phep" 
@@ -44,4 +55,3 @@
         />
     </data>
 </odoo>
-    
